@@ -14,8 +14,9 @@ public class SHNetwork {
     public typealias completion = (_ response: Result<[String: Any], Error>) -> Void
     public typealias codableCompletion<T: Codable> = (_ response: Result<T, Error>) -> Void
     
-    public var headers: [String: String] = [:]
     public var baseURL: String = ""
+    
+    private(set) var headers: [String: String] = [:]
     
     
     public static let shared = SHNetwork()
