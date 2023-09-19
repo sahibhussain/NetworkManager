@@ -15,8 +15,7 @@ public class SHNetwork {
     public typealias codableCompletion<T: Codable> = (_ response: Result<T, Error>) -> Void
     
     public var baseURL: String = ""
-    
-    private(set) var headers: [String: String] = [:]
+    public var headers: [String: String] = [:]
     
     
     public static let shared = SHNetwork()
@@ -26,22 +25,18 @@ public class SHNetwork {
     
     public func set(_ header: String, value: String) {
         headers[header] = value
-        sanitiseHeader()
+        headers = sanitizeParam(headers)
     }
     
     public func remove(_ header: String) {
         headers[header] = nil
-        sanitiseHeader()
+        headers = sanitizeParam(headers)
     }
     
-    private func sanitiseHeader() {
-        var localHeader: [String: String] = [:]
-        for (key, value) in headers {
-            if headers[key] != nil {
-                localHeader[key] = value
-            }
-        }
-        headers = localHeader
+    public func createCustomError(_ message: String?, code: Int = 0) -> Error {
+        guard let message = message else {return CustomError.invalidData}
+        let customError = NSError(domain:"", code: code, userInfo:[ NSLocalizedDescriptionKey: message])
+        return customError as Error
     }
     
     
