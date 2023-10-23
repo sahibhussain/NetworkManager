@@ -1,12 +1,12 @@
 //
-//  NetworkHelper.swift
-//  SahibHelper
+//  SHNetwork.swift
+//  SHNetwork
 //
 //  Created by sahib hussain on 08/06/18.
-//  Copyright © 2018 Burning Desire Inclusive. All rights reserved.
+//  Copyright © 2018 sahib hussain. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import Alamofire
 
 public class SHNetwork {
@@ -173,6 +173,38 @@ public class SHNetwork {
         
         var urlString = baseURL + urlExt + "?" + param
         urlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
+        
+        /*
+        guard let url = URL(string: urlString) else {
+            comp(.failure(CustomError.invalidURL(urlString: urlString)))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.method = .get
+        request.headers = HTTPHeaders(headers)
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            
+            if let error = error {
+                comp(.failure(error))
+                return
+            }
+            
+            if let data = data {
+                guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
+                    comp(.failure(CustomError.invalidData))
+                    return
+                }
+                comp(.success(json))
+                return
+            }
+            
+            comp(.failure(CustomError.invalidData))
+            
+        }
+        task.resume()
+        */
         
         AF.request(urlString, method: .get, headers: HTTPHeaders(headers))
             .responseData(completionHandler: { response in

@@ -55,7 +55,7 @@ public class SHKeyManager {
         ]
         
         var result: AnyObject?
-        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        _ = SecItemCopyMatching(query as CFDictionary, &result)
         
         guard let returnData = result as? Data else {return nil}
         return String(data: returnData, encoding: .utf8)
