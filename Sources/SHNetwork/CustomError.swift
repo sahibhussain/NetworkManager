@@ -9,15 +9,19 @@
 import Foundation
 
 enum CustomError: Error {
-    case invalidData
+    case invalidResponse
+    case invalidRequest
     case invalidURL(urlString: String)
+    case unknown
 }
 
 extension CustomError: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .invalidData: return "Error decoding json data."
+        case .invalidResponse: return "Error decoding response data."
+        case .invalidRequest: return "Error decoding request data."
         case .invalidURL(let urlString): return "Invalid URL: \(urlString)"
+        case .unknown:  return "Unknown error"
         }
     }
 }
