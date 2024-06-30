@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum CustomError: Error {
+public enum CustomError: Error {
     case invalidResponse
     case invalidRequest
     case invalidURL(urlString: String)
