@@ -18,6 +18,13 @@ public class SHNetwork {
     private(set) var headers: [String: String] = [:]
     
     
+//        .responseDecodable(of: T.self, completionHandler: { response in
+//            switch response.result {
+//            case .success(let result): comp(.success(result))
+//            case .failure(let error): comp(.failure(error))
+//            }
+//        })
+    
     public static let shared = SHNetwork()
     private init () {
         headers = ["Content-Type": "application/json"]
@@ -75,11 +82,11 @@ public class SHNetwork {
         
     }
     
-    public func sendPostRequest<T: Codable>(_ urlExt: String, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
-        sendRequest(urlExt, method: .post, param: param, shouldSanitise: shouldSanitise, customHeader: customHeader, comp: comp)
+    public func sendCodablePostRequest<T: Codable>(_ urlExt: String, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+        sendCodableRequest(urlExt, method: .post, param: param, shouldSanitise: shouldSanitise, customHeader: customHeader, comp: comp)
     }
     
-    public func sendPostRequest<T: Codable>(_ urlExt: String, param: [String: String], withFile: [String: URL], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+    public func sendCodablePostRequest<T: Codable>(_ urlExt: String, param: [String: String], withFile: [String: URL], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
         
         let urlString = baseURL + urlExt
         var localParam = param
@@ -190,7 +197,7 @@ public class SHNetwork {
         
     }
     
-    public func sendGetRequest<T: Codable>(_ urlExt: String, param: String, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+    public func sendCodableGetRequest<T: Codable>(_ urlExt: String, param: String, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
         
         var urlString = baseURL + urlExt + "?" + param
         urlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
@@ -211,7 +218,7 @@ public class SHNetwork {
         
     }
     
-    public func sendGetRequest<T: Codable>(_ urlExt: String, param: [String: Any], customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+    public func sendCodableGetRequest<T: Codable>(_ urlExt: String, param: [String: Any], customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
         
         var urlString = baseURL + urlExt + "?" + convertToGetParam(param)
         urlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
@@ -232,7 +239,7 @@ public class SHNetwork {
         
     }
     
-    public func sendGetRequest<T: Codable>(with completeUrl: String, param: String, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+    public func sendCodableGetRequest<T: Codable>(with completeUrl: String, param: String, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
         
         var urlString = completeUrl + "?" + param
         urlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
@@ -253,7 +260,7 @@ public class SHNetwork {
         
     }
     
-    public func sendGetRequest<T: Codable>(with completeUrl: String, param: [String: Any], customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+    public func sendCodableGetRequest<T: Codable>(with completeUrl: String, param: [String: Any], customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
         
         var urlString = completeUrl + "?" + convertToGetParam(param)
         urlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
@@ -317,7 +324,7 @@ public class SHNetwork {
             }
     }
     
-    public func sendRequest<T: Codable>(_ urlExt: String, method: HTTPMethod, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+    public func sendCodableRequest<T: Codable>(_ urlExt: String, method: HTTPMethod, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
         
         let urlString = baseURL + urlExt
         var localParam = param
@@ -338,7 +345,7 @@ public class SHNetwork {
             }
     }
     
-    public func sendRequest<T: Codable>(with completeUrl: String, method: HTTPMethod, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], headers: [String: String], comp: @escaping codableCompletion<T>) {
+    public func sendCodableRequest<T: Codable>(with completeUrl: String, method: HTTPMethod, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], headers: [String: String], comp: @escaping codableCompletion<T>) {
         
         var localParam = param
         if shouldSanitise { localParam = sanitizeParam(param) }
