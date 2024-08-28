@@ -15,6 +15,8 @@ public class SHNetwork {
     public typealias dataCompletion = (_ response: Result<Data, Error>) -> Void
     public typealias codableCompletion<T: Codable> = (_ response: Result<T, Error>) -> Void
     
+    public typealias codableResponse<T: Codable> = Result<T, Error>
+    
     private(set) var baseURL: String = ""
     private(set) var headers: [String: String] = [:]
     
@@ -431,18 +433,12 @@ public extension SHNetwork {
         let localHeaders = headers.merging(customHeader) { (_, new) in new }
         
         AF.request(urlString, method: .get, headers: .init(localHeaders))
-            .responseData(completionHandler: { response in
+            .responseDecodable(of: T.self) { response in
                 switch response.result {
-                case .success(let data):
-                    guard let json = try? JSONDecoder().decode(T.self, from: data) else {
-                        comp(.failure(CustomError.invalidResponse))
-                        return
-                    }
-                    comp(.success(json))
+                case .success(let result): comp(.success(result))
                 case .failure(let error): comp(.failure(error))
                 }
-            })
-        
+            }
     }
     
     func sendGetRequest<T: Codable>(with completeUrl: String, param: [String: Any], customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
