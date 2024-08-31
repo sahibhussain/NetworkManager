@@ -17,8 +17,11 @@ open class SHNetwork {
     
     public typealias codableResponse<T: Codable> = Result<T, Error>
     
-    private(set) var baseURL: String = ""
-    private(set) var headers: [String: String] = [:]
+    private var baseURL: String = ""
+    private var headers: [String: String] = [:]
+    
+    public func getBaseURL() -> String { baseURL }
+    public func getGlobalHeaders() -> [String: String] { headers }
     
     
     public static let shared = SHNetwork()
@@ -94,6 +97,7 @@ open class SHNetwork {
     
 }
 
+// MARK: - data completion response -
 public extension SHNetwork {
     
     // MARK: - post request
@@ -222,6 +226,7 @@ public extension SHNetwork {
     
 }
 
+// MARK: - Dict completion response -
 public extension SHNetwork {
     
     // MARK: - post request
@@ -394,6 +399,7 @@ public extension SHNetwork {
     
 }
 
+// MARK: - Codable completion response -
 public extension SHNetwork {
     
     // MARK: - post request
