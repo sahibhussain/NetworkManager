@@ -29,9 +29,9 @@ open class SHNetwork {
         headers = ["Content-Type": "application/json"]
     }
     
-    public func initialise(_ baseURL: String, globalHeaders: [String: String] = [:]) {
+    public func initialise(_ baseURL: String, globalHeaders: [String: String]? = nil) {
         self.baseURL = baseURL
-        self.headers = globalHeaders
+        if let globalHeaders { self.headers = globalHeaders }
     }
     
     public func setGlobalHeader(_ key: String, value: String) {
