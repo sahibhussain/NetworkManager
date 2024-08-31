@@ -12,6 +12,7 @@ public enum SHNetworkError: Error {
     case invalidResponse
     case invalidRequest
     case invalidURL(urlString: String)
+    case custom(message: String)
     case unknown
 }
 
@@ -21,6 +22,7 @@ extension SHNetworkError: CustomStringConvertible {
         case .invalidResponse: return "Error decoding response data."
         case .invalidRequest: return "Error decoding request data."
         case .invalidURL(let urlString): return "Invalid URL: \(urlString)"
+        case .custom(let message): return message
         case .unknown:  return "Unknown error"
         }
     }
