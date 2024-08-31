@@ -9,7 +9,7 @@
 import Foundation
 import Alamofire
 
-public class SHNetwork {
+open class SHNetwork {
     
     public typealias completion = (_ response: Result<[String: Any], Error>) -> Void
     public typealias dataCompletion = (_ response: Result<Data, Error>) -> Void
