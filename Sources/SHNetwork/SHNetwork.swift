@@ -42,7 +42,7 @@ public class SHNetwork {
     }
     
     public func createCustomError(_ message: String?, code: Int = 0) -> Error {
-        guard let message = message else {return CustomError.unknown}
+        guard let message = message else {return SHNetworkError.unknown}
         let customError = NSError(domain:"", code: code, userInfo:[ NSLocalizedDescriptionKey: message])
         return customError as Error
     }
@@ -244,7 +244,7 @@ public extension SHNetwork {
             switch response.result {
             case .success(let data):
                 guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                    comp(.failure(CustomError.invalidResponse))
+                    comp(.failure(SHNetworkError.invalidResponse))
                     return
                 }
                 comp(.success(json))
@@ -267,7 +267,7 @@ public extension SHNetwork {
                 switch response.result {
                 case .success(let data):
                     guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                        comp(.failure(CustomError.invalidResponse))
+                        comp(.failure(SHNetworkError.invalidResponse))
                         return
                     }
                     comp(.success(json))
@@ -288,7 +288,7 @@ public extension SHNetwork {
                 switch response.result {
                 case .success(let data):
                     guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                        comp(.failure(CustomError.invalidResponse))
+                        comp(.failure(SHNetworkError.invalidResponse))
                         return
                     }
                     comp(.success(json))
@@ -309,7 +309,7 @@ public extension SHNetwork {
                 switch response.result {
                 case .success(let data):
                     guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                        comp(.failure(CustomError.invalidResponse))
+                        comp(.failure(SHNetworkError.invalidResponse))
                         return
                     }
                     comp(.success(json))
@@ -330,7 +330,7 @@ public extension SHNetwork {
                 switch response.result {
                 case .success(let data):
                     guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                        comp(.failure(CustomError.invalidResponse))
+                        comp(.failure(SHNetworkError.invalidResponse))
                         return
                     }
                     comp(.success(json))
@@ -354,7 +354,7 @@ public extension SHNetwork {
                 switch response.result {
                 case .success(let data):
                     guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                        comp(.failure(CustomError.invalidResponse))
+                        comp(.failure(SHNetworkError.invalidResponse))
                         return
                     }
                     comp(.success(json))
@@ -374,7 +374,7 @@ public extension SHNetwork {
                 switch response.result {
                 case .success(let data):
                     guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                        comp(.failure(CustomError.invalidResponse))
+                        comp(.failure(SHNetworkError.invalidResponse))
                         return
                     }
                     comp(.success(json))

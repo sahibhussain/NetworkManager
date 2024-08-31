@@ -8,14 +8,14 @@
 
 import Foundation
 
-public enum CustomError: Error {
+public enum SHNetworkError: Error {
     case invalidResponse
     case invalidRequest
     case invalidURL(urlString: String)
     case unknown
 }
 
-extension CustomError: CustomStringConvertible {
+extension SHNetworkError: CustomStringConvertible {
     public var description: String {
         switch self {
         case .invalidResponse: return "Error decoding response data."
