@@ -20,7 +20,7 @@ extension SHNetworkError: CustomStringConvertible {
     
     public var description: String { errorDescription ?? "Unknown error" }
     
-    public var errorCode: Int? {
+    public var errorCode: Int {
         switch self {
         case .invalidResponse: return 500
         case .invalidRequest: return 400
@@ -47,9 +47,6 @@ extension SHNetworkError: LocalizedError {
 
 extension Error {
     public var shNetworkError: SHNetworkError? {
-        switch self {
-        case let error as SHNetworkError: return error
-        default: return nil
-        }
+        self as? SHNetworkError
     }
 }
