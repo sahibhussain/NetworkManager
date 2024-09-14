@@ -11,13 +11,25 @@ import Foundation
 public enum SHNetworkError: Error {
     case invalidResponse
     case invalidRequest
-    case invalidURL(urlString: String)
-    case custom(message: String)
+    case invalidURL(urlString: String, code: Int)
+    case custom(message: String, code: Int)
     case unknown
 }
 
 extension SHNetworkError: CustomStringConvertible {
+    
     public var description: String { errorDescription ?? "Unknown error" }
+    
+    public var errorCode: Int? {
+        switch self {
+        case .invalidResponse: return 500
+        case .invalidRequest: return 400
+        case .invalidURL(_, let code): return code
+        case .custom(_, let code): return code
+        case .unknown:  return 400
+        }
+    }
+    
 }
 
 extension SHNetworkError: LocalizedError {
@@ -25,9 +37,19 @@ extension SHNetworkError: LocalizedError {
         switch self {
         case .invalidResponse: return "Error decoding response data."
         case .invalidRequest: return "Error decoding request data."
-        case .invalidURL(let urlString): return "Invalid URL: \(urlString)"
-        case .custom(let message): return message
+        case .invalidURL(let urlString, _): return "Invalid URL: \(urlString)"
+        case .custom(let message, _): return message
         case .unknown:  return "Unknown error"
+        }
+    }
+}
+
+
+extension Error {
+    public var shNetworkError: SHNetworkError? {
+        switch self {
+        case let error as SHNetworkError: return error
+        default: return nil
         }
     }
 }
