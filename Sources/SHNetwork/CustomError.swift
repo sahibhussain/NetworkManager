@@ -17,7 +17,11 @@ public enum SHNetworkError: Error {
 }
 
 extension SHNetworkError: CustomStringConvertible {
-    public var description: String {
+    public var description: String { errorDescription ?? "Unknown error" }
+}
+
+extension SHNetworkError: LocalizedError {
+    public var errorDescription: String? {
         switch self {
         case .invalidResponse: return "Error decoding response data."
         case .invalidRequest: return "Error decoding request data."
