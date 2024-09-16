@@ -11,8 +11,8 @@ import Foundation
 public enum SHNetworkError: Error {
     case invalidResponse
     case invalidRequest
-    case invalidURL(urlString: String, code: Int)
-    case custom(message: String, code: Int)
+    case invalidURL(urlString: String, code: Int = 400)
+    case custom(message: String, code: Int = 400)
     case unknown
 }
 
