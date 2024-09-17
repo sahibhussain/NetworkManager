@@ -224,6 +224,19 @@ public extension SHNetwork {
             }
     }
     
+    
+    // MARK: - upload request
+    func uploadMedia(with completeURL: String, method: HTTPMethod, fileData: Data, customHeader: [String: String], useOnlyCustomHeader: Bool = false, comp: @escaping dataCompletion) {
+        let localHeaders = useOnlyCustomHeader ? customHeader : headers.merging(customHeader) { (_, new) in new }
+        AF.upload(fileData, to: completeURL, method: method, headers: .init(localHeaders))
+            .responseData { response in
+                switch response.result {
+                case .success(let data): comp(.success(data))
+                case .failure(let error): comp(.failure(error))
+                }
+            }
+    }
+    
 }
 
 // MARK: - Dict completion response -
@@ -390,10 +403,20 @@ public extension SHNetwork {
     
     
     // MARK: - upload request
-    func uploadMedia(with completeURL: String, method: HTTPMethod, fileData: Data, customHeader: [String: String], useOnlyCustomHeader: Bool = false, comp: @escaping (Bool) -> Void) {
+    func uploadMedia(with completeURL: String, method: HTTPMethod, fileData: Data, customHeader: [String: String], useOnlyCustomHeader: Bool = false, comp: @escaping completion) {
         let localHeaders = useOnlyCustomHeader ? customHeader : headers.merging(customHeader) { (_, new) in new }
         AF.upload(fileData, to: completeURL, method: method, headers: .init(localHeaders))
-            .responseData { response in comp(response.response?.statusCode == 200) }
+            .responseData { response in
+                switch response.result {
+                case .success(let data):
+                    guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
+                        comp(.failure(SHNetworkError.invalidResponse))
+                        return
+                    }
+                    comp(.success(json))
+                case .failure(let error): comp(.failure(error))
+                }
+            }
     }
     
     
@@ -491,6 +514,19 @@ public extension SHNetwork {
         let localHeaders = headers.merging(customHeader) { (_, new) in new }
         
         AF.request(completeUrl, method: method, parameters: localParam, encoding: JSONEncoding.default, headers: .init(localHeaders))
+            .responseDecodable(of: T.self) { response in
+                switch response.result {
+                case .success(let result): comp(.success(result))
+                case .failure(let error): comp(.failure(error))
+                }
+            }
+    }
+    
+    
+    // MARK: - upload request
+    func uploadMedia<T: Codable>(with completeURL: String, method: HTTPMethod, fileData: Data, customHeader: [String: String], useOnlyCustomHeader: Bool = false, comp: @escaping codableCompletion<T>) {
+        let localHeaders = useOnlyCustomHeader ? customHeader : headers.merging(customHeader) { (_, new) in new }
+        AF.upload(fileData, to: completeURL, method: method, headers: .init(localHeaders))
             .responseDecodable(of: T.self) { response in
                 switch response.result {
                 case .success(let result): comp(.success(result))
