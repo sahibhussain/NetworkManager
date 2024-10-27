@@ -11,6 +11,7 @@ import Foundation
 public enum SHNetworkError: Error {
     case invalidResponse
     case invalidRequest
+    case invalidCertificate
     case invalidURL(urlString: String, code: Int = 400)
     case custom(message: String, code: Int = 400)
     case unknown
@@ -24,6 +25,7 @@ extension SHNetworkError: CustomStringConvertible {
         switch self {
         case .invalidResponse: return 500
         case .invalidRequest: return 400
+        case .invalidCertificate: return 401
         case .invalidURL(_, let code): return code
         case .custom(_, let code): return code
         case .unknown:  return 400
@@ -37,6 +39,7 @@ extension SHNetworkError: LocalizedError {
         switch self {
         case .invalidResponse: return "Error decoding response data."
         case .invalidRequest: return "Error decoding request data."
+        case .invalidCertificate: return "Invalid certificate."
         case .invalidURL(let urlString, _): return "Invalid URL: \(urlString)"
         case .custom(let message, _): return message
         case .unknown:  return "Unknown error"
