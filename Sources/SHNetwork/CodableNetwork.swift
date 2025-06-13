@@ -12,11 +12,11 @@ import Alamofire
 public extension SHNetwork {
     
     // MARK: - post request
-    func sendPostRequest<T: Codable>(_ urlExt: String, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+    func sendPostRequest<T: Codable & Sendable>(_ urlExt: String, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
         sendRequest(urlExt, method: .post, param: param, shouldSanitise: shouldSanitise, customHeader: customHeader, comp: comp)
     }
     
-    func sendPostRequest<T: Codable>(_ urlExt: String, param: [String: String], withFile: [String: URL], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+    func sendPostRequest<T: Codable & Sendable>(_ urlExt: String, param: [String: String], withFile: [String: URL], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
         
         let urlString = baseURL + urlExt
         var localParam = param
@@ -37,11 +37,11 @@ public extension SHNetwork {
     
     
     // MARK: - get request
-    func sendGetRequest<T: Codable>(_ urlExt: String, param: [String: Any], customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+    func sendGetRequest<T: Codable & Sendable>(_ urlExt: String, param: [String: Any], customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
         sendGetRequest(urlExt, param: convertToGetParam(param), customHeader: customHeader, comp: comp)
     }
     
-    func sendGetRequest<T: Codable>(_ urlExt: String, param: String, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+    func sendGetRequest<T: Codable & Sendable>(_ urlExt: String, param: String, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
         
         var urlString = baseURL + urlExt + "?" + param
         urlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
@@ -56,11 +56,11 @@ public extension SHNetwork {
             }
     }
     
-    func sendGetRequest<T: Codable>(with completeUrl: String, param: [String: Any], customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+    func sendGetRequest<T: Codable & Sendable>(with completeUrl: String, param: [String: Any], customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
         sendGetRequest(with: completeUrl, param: convertToGetParam(param), customHeader: customHeader, comp: comp)
     }
     
-    func sendGetRequest<T: Codable>(with completeUrl: String, param: String, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+    func sendGetRequest<T: Codable & Sendable>(with completeUrl: String, param: String, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
         
         var urlString = completeUrl + "?" + param
         urlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
@@ -77,7 +77,7 @@ public extension SHNetwork {
     
     
     // MARK: - general request
-    func sendRequest<T: Codable>(_ urlExt: String, method: HTTPMethod, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
+    func sendRequest<T: Codable & Sendable>(_ urlExt: String, method: HTTPMethod, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping codableCompletion<T>) {
         
         let urlString = baseURL + urlExt
         var localParam = param
@@ -93,7 +93,7 @@ public extension SHNetwork {
             }
     }
     
-    func sendRequest<T: Codable>(with completeUrl: String, method: HTTPMethod, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], headers: [String: String], comp: @escaping codableCompletion<T>) {
+    func sendRequest<T: Codable & Sendable>(with completeUrl: String, method: HTTPMethod, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], headers: [String: String], comp: @escaping codableCompletion<T>) {
         
         var localParam = param
         if shouldSanitise { localParam = sanitizeParam(param) }
@@ -110,7 +110,7 @@ public extension SHNetwork {
     
     
     // MARK: - upload request
-    func uploadMedia<T: Codable>(with completeURL: String, method: HTTPMethod, fileData: Data, customHeader: [String: String], useOnlyCustomHeader: Bool = false, comp: @escaping codableCompletion<T>) {
+    func uploadMedia<T: Codable & Sendable>(with completeURL: String, method: HTTPMethod, fileData: Data, customHeader: [String: String], useOnlyCustomHeader: Bool = false, comp: @escaping codableCompletion<T>) {
         let localHeaders = useOnlyCustomHeader ? customHeader : headers.merging(customHeader) { (_, new) in new }
         AF.upload(fileData, to: completeURL, method: method, headers: .init(localHeaders))
             .responseDecodable(of: T.self) { response in
