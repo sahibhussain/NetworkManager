@@ -1,7 +1,7 @@
 import XCTest
-@testable import SHNetwork
+@testable import Network
 
-final class SHNetworkTests: XCTestCase {
+final class NetworkTests: XCTestCase {
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
