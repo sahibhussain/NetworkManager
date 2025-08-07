@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 import OSLog
 
-open class SHNetwork {
+open class Network {
     
     public typealias completion = (_ response: Result<[String: Any], Error>) -> Void
     public typealias dataCompletion = (_ response: Result<Data, Error>) -> Void
@@ -26,7 +26,7 @@ open class SHNetwork {
     public func getGlobalHeaders() -> [String: String] { headers }
     
     
-    public static let shared = SHNetwork()
+    public static let shared = Network()
     private init () {
         headers = ["Content-Type": "application/json"]
     }
