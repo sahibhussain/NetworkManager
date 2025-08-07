@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 
 // MARK: - Dict completion response -
-public extension SHNetwork {
+public extension Network {
     
     // MARK: - post request
     func sendPostRequest(_ urlExt: String, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping completion) {
@@ -31,7 +31,7 @@ public extension SHNetwork {
             switch response.result {
             case .success(let data):
                 guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                    comp(.failure(SHNetworkError.invalidResponse))
+                    comp(.failure(NetworkError.invalidResponse))
                     return
                 }
                 comp(.success(json))
@@ -54,7 +54,7 @@ public extension SHNetwork {
                 switch response.result {
                 case .success(let data):
                     guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                        comp(.failure(SHNetworkError.invalidResponse))
+                        comp(.failure(NetworkError.invalidResponse))
                         return
                     }
                     comp(.success(json))
@@ -75,7 +75,7 @@ public extension SHNetwork {
                 switch response.result {
                 case .success(let data):
                     guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                        comp(.failure(SHNetworkError.invalidResponse))
+                        comp(.failure(NetworkError.invalidResponse))
                         return
                     }
                     comp(.success(json))
@@ -96,7 +96,7 @@ public extension SHNetwork {
                 switch response.result {
                 case .success(let data):
                     guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                        comp(.failure(SHNetworkError.invalidResponse))
+                        comp(.failure(NetworkError.invalidResponse))
                         return
                     }
                     comp(.success(json))
@@ -117,7 +117,7 @@ public extension SHNetwork {
                 switch response.result {
                 case .success(let data):
                     guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                        comp(.failure(SHNetworkError.invalidResponse))
+                        comp(.failure(NetworkError.invalidResponse))
                         return
                     }
                     comp(.success(json))
@@ -141,7 +141,7 @@ public extension SHNetwork {
                 switch response.result {
                 case .success(let data):
                     guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                        comp(.failure(SHNetworkError.invalidResponse))
+                        comp(.failure(NetworkError.invalidResponse))
                         return
                     }
                     comp(.success(json))
@@ -161,7 +161,7 @@ public extension SHNetwork {
                 switch response.result {
                 case .success(let data):
                     guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                        comp(.failure(SHNetworkError.invalidResponse))
+                        comp(.failure(NetworkError.invalidResponse))
                         return
                     }
                     comp(.success(json))
@@ -179,7 +179,7 @@ public extension SHNetwork {
                 switch response.result {
                 case .success(let data):
                     guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
-                        comp(.failure(SHNetworkError.invalidResponse))
+                        comp(.failure(NetworkError.invalidResponse))
                         return
                     }
                     comp(.success(json))

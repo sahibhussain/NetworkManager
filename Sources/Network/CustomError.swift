@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum SHNetworkError: Error {
+public enum NetworkError: Error {
     case invalidResponse
     case invalidRequest
     case invalidCertificate
@@ -17,7 +17,7 @@ public enum SHNetworkError: Error {
     case unknown
 }
 
-extension SHNetworkError: CustomStringConvertible {
+extension NetworkError: CustomStringConvertible {
     
     public var description: String { errorDescription ?? "Unknown error" }
     
@@ -34,7 +34,7 @@ extension SHNetworkError: CustomStringConvertible {
     
 }
 
-extension SHNetworkError: LocalizedError {
+extension NetworkError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .invalidResponse: return "Error decoding response data."
@@ -49,7 +49,7 @@ extension SHNetworkError: LocalizedError {
 
 
 extension Error {
-    public var shNetworkError: SHNetworkError? {
-        self as? SHNetworkError
+    public var shNetworkError: NetworkError? {
+        self as? NetworkError
     }
 }

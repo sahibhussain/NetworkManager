@@ -38,7 +38,7 @@ open class Network {
             do {
                 let publicKeyData = try Data(contentsOf: publicKey)
                 guard let certificate = SecCertificateCreateWithData(nil, publicKeyData as CFData) else {
-                    throw SHNetworkError.invalidCertificate
+                    throw NetworkError.invalidCertificate
                 }
 
                 var publicKey: SecKey?
@@ -48,7 +48,7 @@ open class Network {
                 let status = SecTrustCreateWithCertificates(certificate, policy, &trust)
                 if status == errSecSuccess, let trust = trust { publicKey = SecTrustCopyKey(trust) }
                 
-                guard let pinnedPublicKey = publicKey else { throw SHNetworkError.invalidCertificate }
+                guard let pinnedPublicKey = publicKey else { throw NetworkError.invalidCertificate }
                 let publicKeyTrustEvaluator = PublicKeysTrustEvaluator(keys: [pinnedPublicKey])
                 let serverTrustManager = ServerTrustManager(evaluators: [baseURL: publicKeyTrustEvaluator])
                 session = Session(serverTrustManager: serverTrustManager)
@@ -62,7 +62,7 @@ open class Network {
             do {
                 let publicKeyData = try Data(contentsOf: certificate)
                 guard let certificate = SecCertificateCreateWithData(nil, publicKeyData as CFData) else {
-                    throw SHNetworkError.invalidCertificate
+                    throw NetworkError.invalidCertificate
                 }
                 
                 let publicKeys = [certificate].compactMap { SecCertificateCopyKey($0) }  // Extract public key from the certificate
@@ -88,7 +88,7 @@ open class Network {
     
     @available(*, deprecated, message: "Use SHNetworkError.custom(message:code:) instead")
     public func createCustomError(_ message: String?, code: Int = 0) -> Error {
-        guard let message = message else {return SHNetworkError.unknown}
+        guard let message = message else {return NetworkError.unknown}
         let customError = NSError(domain:"", code: code, userInfo:[ NSLocalizedDescriptionKey: message])
         return customError as Error
     }
