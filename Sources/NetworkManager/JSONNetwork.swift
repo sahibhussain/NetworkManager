@@ -1,5 +1,5 @@
 //
-//  DataNetwork.swift
+//  JSONNetwork.swift
 //  SHNetwork
 //
 //  Created by Sahib Hussain on 24/09/24.
@@ -8,15 +8,15 @@
 import Foundation
 import Alamofire
 
-// MARK: - data completion response -
-public extension Network {
+// MARK: - Dict completion response -
+public extension NetworkManager {
     
     // MARK: - post request
-    func sendPostRequest(_ urlExt: String, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping dataCompletion) {
+    func sendPostRequest(_ urlExt: String, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping completion) {
         sendRequest(urlExt, method: .post, param: param, shouldSanitise: shouldSanitise, customHeader: customHeader, comp: comp)
     }
     
-    func sendPostRequest(_ urlExt: String, param: [String: String], withFile: [String: URL], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping dataCompletion) {
+    func sendPostRequest(_ urlExt: String, param: [String: String], withFile: [String: URL], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping completion) {
         
         let urlString = baseURL + urlExt
         var localParam = param
@@ -29,7 +29,12 @@ public extension Network {
         }, to: urlString, headers: .init(localHeaders))
         .responseData(completionHandler: { response in
             switch response.result {
-            case .success(let data): comp(.success(data))
+            case .success(let data):
+                guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
+                    comp(.failure(NetworkError.invalidResponse))
+                    return
+                }
+                comp(.success(json))
             case .failure(let error): comp(.failure(error))
             }
         })
@@ -38,7 +43,7 @@ public extension Network {
     
     
     // MARK: - get request
-    func sendGetRequest(_ urlExt: String, param: String, customHeader: [String: String] = [:], comp: @escaping dataCompletion) {
+    func sendGetRequest(_ urlExt: String, param: String, customHeader: [String: String] = [:], comp: @escaping completion) {
         
         var urlString = baseURL + urlExt + "?" + param
         urlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
@@ -47,14 +52,19 @@ public extension Network {
         session.request(urlString, method: .get, headers: .init(localHeaders))
             .responseData(completionHandler: { response in
                 switch response.result {
-                case .success(let data): comp(.success(data))
+                case .success(let data):
+                    guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
+                        comp(.failure(NetworkError.invalidResponse))
+                        return
+                    }
+                    comp(.success(json))
                 case .failure(let error): comp(.failure(error))
                 }
             })
         
     }
     
-    func sendGetRequest(_ urlExt: String, param: [String: Any], customHeader: [String: String] = [:], comp: @escaping dataCompletion) {
+    func sendGetRequest(_ urlExt: String, param: [String: Any], customHeader: [String: String] = [:], comp: @escaping completion) {
         
         var urlString = baseURL + urlExt + "?" + convertToGetParam(param)
         urlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
@@ -63,14 +73,19 @@ public extension Network {
         session.request(urlString, method: .get, headers: .init(localHeaders))
             .responseData(completionHandler: { response in
                 switch response.result {
-                case .success(let data): comp(.success(data))
+                case .success(let data):
+                    guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
+                        comp(.failure(NetworkError.invalidResponse))
+                        return
+                    }
+                    comp(.success(json))
                 case .failure(let error): comp(.failure(error))
                 }
             })
         
     }
     
-    func sendGetRequest(with completeUrl: String, param: String, customHeader: [String: String] = [:], comp: @escaping dataCompletion) {
+    func sendGetRequest(with completeUrl: String, param: String, customHeader: [String: String] = [:], comp: @escaping completion) {
         
         var urlString = completeUrl + "?" + param
         urlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
@@ -79,14 +94,19 @@ public extension Network {
         AF.request(urlString, method: .get, headers: .init(localHeaders))
             .responseData(completionHandler: { response in
                 switch response.result {
-                case .success(let data): comp(.success(data))
+                case .success(let data):
+                    guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
+                        comp(.failure(NetworkError.invalidResponse))
+                        return
+                    }
+                    comp(.success(json))
                 case .failure(let error): comp(.failure(error))
                 }
             })
         
     }
     
-    func sendGetRequest(with completeUrl: String, param: [String: Any], customHeader: [String: String] = [:], comp: @escaping dataCompletion) {
+    func sendGetRequest(with completeUrl: String, param: [String: Any], customHeader: [String: String] = [:], comp: @escaping completion) {
         
         var urlString = completeUrl + "?" + convertToGetParam(param)
         urlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
@@ -95,7 +115,12 @@ public extension Network {
         AF.request(urlString, method: .get, headers: .init(localHeaders))
             .responseData(completionHandler: { response in
                 switch response.result {
-                case .success(let data): comp(.success(data))
+                case .success(let data):
+                    guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
+                        comp(.failure(NetworkError.invalidResponse))
+                        return
+                    }
+                    comp(.success(json))
                 case .failure(let error): comp(.failure(error))
                 }
             })
@@ -104,7 +129,7 @@ public extension Network {
     
     
     // MARK: - general request
-    func sendRequest(_ urlExt: String, method: HTTPMethod, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping dataCompletion) {
+    func sendRequest(_ urlExt: String, method: HTTPMethod, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping completion) {
         
         let urlString = baseURL + urlExt
         var localParam = param
@@ -114,13 +139,18 @@ public extension Network {
         session.request(urlString, method: method, parameters: localParam, encoding: JSONEncoding.default, headers: .init(localHeaders))
             .responseData { response in
                 switch response.result {
-                case .success(let data): comp(.success(data))
+                case .success(let data):
+                    guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
+                        comp(.failure(NetworkError.invalidResponse))
+                        return
+                    }
+                    comp(.success(json))
                 case .failure(let error): comp(.failure(error))
                 }
             }
     }
     
-    func sendRequest(with completeUrl: String, method: HTTPMethod, param: [String: Any], headers: [String: String], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping dataCompletion) {
+    func sendRequest(with completeUrl: String, method: HTTPMethod, param: [String: Any], headers: [String: String], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping completion) {
         
         var localParam = param
         if shouldSanitise { localParam = sanitizeParam(param) }
@@ -129,7 +159,12 @@ public extension Network {
         AF.request(completeUrl, method: method, parameters: localParam, encoding: JSONEncoding.default, headers: .init(localHeaders))
             .responseData { response in
                 switch response.result {
-                case .success(let data): comp(.success(data))
+                case .success(let data):
+                    guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
+                        comp(.failure(NetworkError.invalidResponse))
+                        return
+                    }
+                    comp(.success(json))
                 case .failure(let error): comp(.failure(error))
                 }
             }
@@ -137,15 +172,22 @@ public extension Network {
     
     
     // MARK: - upload request
-    func uploadMedia(with completeURL: String, method: HTTPMethod, fileData: Data, customHeader: [String: String], useOnlyCustomHeader: Bool = false, comp: @escaping dataCompletion) {
+    func uploadMedia(with completeURL: String, method: HTTPMethod, fileData: Data, customHeader: [String: String], useOnlyCustomHeader: Bool = false, comp: @escaping completion) {
         let localHeaders = useOnlyCustomHeader ? customHeader : headers.merging(customHeader) { (_, new) in new }
         AF.upload(fileData, to: completeURL, method: method, headers: .init(localHeaders))
             .responseData { response in
                 switch response.result {
-                case .success(let data): comp(.success(data))
+                case .success(let data):
+                    guard let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any] else {
+                        comp(.failure(NetworkError.invalidResponse))
+                        return
+                    }
+                    comp(.success(json))
                 case .failure(let error): comp(.failure(error))
                 }
             }
     }
     
+    
 }
+
