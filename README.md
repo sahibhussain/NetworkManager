@@ -1,10 +1,9 @@
-
-# Network
+# NetworkManager
 A pure Swift library to perform all network functions with ease
 
 ## Overview
 
-Network is a lightweight, Swift-native networking library designed to simplify HTTP requests and API interactions in iOS applications. Built with modern Swift principles, it provides a clean, intuitive interface for common networking operations while maintaining flexibility for advanced use cases.
+NetworkManager is a lightweight, Swift-native networking library designed to simplify HTTP requests and API interactions in iOS applications. Built with modern Swift principles, it provides a clean, intuitive interface for common networking operations while maintaining flexibility for advanced use cases.
 
 Key features:
 - Simple, singleton-based API for quick setup
@@ -24,23 +23,23 @@ The [Swift Package Manager](https://swift.org/package-manager/) is a tool for au
 
 1. Open your Xcode project
 2. Go to File > Swift Packages > Add Package Dependency
-3. Add `https://github.com/sahibhussain/Network.git`
+3. Add `https://github.com/sahibhussain/NetworkManager.git`
 4. Select "Up to Next Major" with "1.1.0"
 
 **If using in Package:**
 
-Once you have your Swift package set up, adding Network as a dependency is as easy as adding it to the `dependencies` value of your `Package.swift`.
+Once you have your Swift package set up, adding NetworkManager as a dependency is as easy as adding it to the `dependencies` value of your `Package.swift`.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/sahibhussain/Network.git", .upToNextMajor(from: "1.1.0"))
+    .package(url: "https://github.com/sahibhussain/NetworkManager.git", .upToNextMajor(from: "1.1.0"))
 ]
 ```
 
-Then add the Network product to your target dependencies:
+Then add the NetworkManager product to your target dependencies:
 
 ```swift
-.product(name: "Network", package: "Network")
+.product(name: "NetworkManager", package: "NetworkManager")
 ```
 
 ## Usage
@@ -57,13 +56,13 @@ Most applications have a single API base URL that is used throughout the applica
 
 ```swift
 // Basic initialization
-Network.shared.initialise("https://api.example.com", globalHeaders: ["Content-Type": "application/json"])
+NetworkManager.shared.initialise("https://api.example.com", globalHeaders: ["Content-Type": "application/json"])
 
 // With SSL pinning
 let publicKeyURL = Bundle.main.url(forResource: "public_key", withExtension: "der")
 let certificateURL = Bundle.main.url(forResource: "certificate", withExtension: "cer")
 
-Network.shared.initialise(
+NetworkManager.shared.initialise(
     "https://api.example.com", 
     globalHeaders: ["Content-Type": "application/json", "Accept": "application/json"],
     publicKey: publicKeyURL,
@@ -76,14 +75,14 @@ Network.shared.initialise(
 Add or update a global header:
 
 ```swift
-Network.shared.setGlobalHeader("Authorization", value: "Bearer your-token-here")
-Network.shared.setGlobalHeader("User-Agent", value: "YourApp/1.0")
+NetworkManager.shared.setGlobalHeader("Authorization", value: "Bearer your-token-here")
+NetworkManager.shared.setGlobalHeader("User-Agent", value: "YourApp/1.0")
 ```
 
 Remove a global header:
 
 ```swift
-Network.shared.removeGlobalHeader("Authorization")
+NetworkManager.shared.removeGlobalHeader("Authorization")
 ```
 
 ### Making API Calls
@@ -105,7 +104,7 @@ The `sendRequest` method is the most flexible option for making API calls.
 - `customHeader: [String: String]`: Additional headers for this specific request (optional)
 
 ```swift
-Network.shared.sendRequest(
+NetworkManager.shared.sendRequest(
     "/api/v1/login",
     method: .POST,
     param: ["username": "john_doe", "password": "secure_password"],
@@ -133,7 +132,7 @@ For convenience, use the dedicated GET request method:
 - `customHeader: [String: String]`: Additional headers (optional)
 
 ```swift
-Network.shared.sendGetRequest(
+NetworkManager.shared.sendGetRequest(
     "/api/v1/users",
     param: ["page": 1, "limit": 10],
     customHeader: ["Cache-Control": "no-cache"]
@@ -170,7 +169,7 @@ let userData = [
     "age": 30
 ]
 
-Network.shared.sendPostRequest(
+NetworkManager.shared.sendPostRequest(
     "/api/v1/users",
     param: userData,
     shouldSanitise: true,
@@ -189,10 +188,10 @@ Network.shared.sendPostRequest(
 
 ### Error Handling Best Practices
 
-When working with the Network library, always handle both success and failure cases:
+When working with the NetworkManager library, always handle both success and failure cases:
 
 ```swift
-Network.shared.sendRequest("/api/v1/data", method: .GET) { (response: Result<DataModel, Error>) in
+NetworkManager.shared.sendRequest("/api/v1/data", method: .GET) { (response: Result<DataModel, Error>) in
     DispatchQueue.main.async {
         switch response {
         case .success(let data):
@@ -234,7 +233,7 @@ func validateSSLPinning() -> Bool {
     }
     
     // Initialize with SSL pinning
-    Network.shared.initialise(
+    NetworkManager.shared.initialise(
         "https://secure-api.example.com",
         globalHeaders: ["Content-Type": "application/json"],
         publicKey: publicKeyURL,
@@ -250,7 +249,7 @@ func validateSSLPinning() -> Bool {
 Follow and contact me on [X (Twitter)](https://x.com/Sahib_hussain0). 
 
 For issues and feature requests:
-- [Open an issue](https://github.com/sahibhussain/Network/issues/new) on GitHub
+- [Open an issue](https://github.com/sahibhussain/NetworkManager/issues/new) on GitHub
 - Pull requests are warmly welcomed
 
 ## License
