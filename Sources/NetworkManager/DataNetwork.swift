@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 
 // MARK: - data completion response -
-public extension Network {
+public extension NetworkManager {
     
     // MARK: - post request
     func sendPostRequest(_ urlExt: String, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping dataCompletion) {
