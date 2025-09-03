@@ -27,7 +27,8 @@ open class NetworkManager {
     
     
     public static let shared = NetworkManager()
-    private init () {
+    
+    public init () {
         headers = ["Content-Type": "application/json"]
     }
     
