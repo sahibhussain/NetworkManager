@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 import OSLog
 
-public actor NetworkManager {
+public final class NetworkManager: @unchecked Sendable {
     
     public typealias completion = @Sendable (_ response: Result<[String: Any], Error>) -> Void
     public typealias dataCompletion = @Sendable (_ response: Result<Data, Error>) -> Void
@@ -20,6 +20,8 @@ public actor NetworkManager {
     internal var headers: [String: String]
     internal var session: Session = Session()
     internal var baseURL: String
+    
+    private let lock = NSLock()
     
     public func getBaseURL() -> String { baseURL }
     public func getGlobalHeaders() -> [String: String] { headers }
@@ -71,16 +73,24 @@ public actor NetworkManager {
     }
     
     public func setGlobalHeader(_ key: String, value: String) {
-        headers[key] = value
-        headers = sanitizeParam(headers)
+        lock.withLock { [weak self] in
+            guard let self else { return }
+            headers[key] = value
+            headers = sanitizeParam(headers)
+        }
     }
     
     public func removeGlobalHeader(_ key: String) {
-        headers[key] = nil
-        headers = sanitizeParam(headers)
+        lock.withLock { [weak self] in
+            guard let self else { return }
+            headers[key] = nil
+            headers = sanitizeParam(headers)
+        }
     }
     
-    public func changeBaseURL(_ url: String) { baseURL = url }
+    public func changeBaseURL(_ url: String) {
+        lock.withLock { [weak self] in self?.baseURL = url }
+    }
     
     
     public func convertToGetParam(_ param: [String: Any]) -> String {
@@ -120,7 +130,7 @@ public actor NetworkManager {
         
     }
     
-    func convertToSendableDict(_ dict: [String: Any]) -> [String: any Sendable] {
+    internal func convertToSendableDict(_ dict: [String: Any]) -> [String: any Sendable] {
         var result: [String: any Sendable] = [:]
         
         for (key, value) in dict {
