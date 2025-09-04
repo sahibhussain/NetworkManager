@@ -107,7 +107,7 @@ public extension NetworkManager {
     func sendRequest(_ urlExt: String, method: HTTPMethod, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping dataCompletion) {
         
         let urlString = baseURL + urlExt
-        var localParam = param
+        var localParam = convertToSendableDict(param)
         if shouldSanitise { localParam = sanitizeParam(param) }
         let localHeaders = headers.merging(customHeader) { (_, new) in new }
                         
@@ -122,7 +122,7 @@ public extension NetworkManager {
     
     func sendRequest(with completeUrl: String, method: HTTPMethod, param: [String: Any], headers: [String: String], shouldSanitise: Bool = false, customHeader: [String: String] = [:], comp: @escaping dataCompletion) {
         
-        var localParam = param
+        var localParam = convertToSendableDict(param)
         if shouldSanitise { localParam = sanitizeParam(param) }
         let localHeaders = headers.merging(customHeader) { (_, new) in new }
         

@@ -10,31 +10,24 @@ import Foundation
 import Alamofire
 import OSLog
 
-open class NetworkManager {
+public actor NetworkManager {
     
-    public typealias completion = (_ response: Result<[String: Any], Error>) -> Void
-    public typealias dataCompletion = (_ response: Result<Data, Error>) -> Void
-    public typealias codableCompletion<T: Codable> = (_ response: Result<T, Error>) -> Void
-    
+    public typealias completion = @Sendable (_ response: Result<[String: Any], Error>) -> Void
+    public typealias dataCompletion = @Sendable (_ response: Result<Data, Error>) -> Void
+    public typealias codableCompletion<T: Codable> = @Sendable (_ response: Result<T, Error>) -> Void
     public typealias codableResponse<T: Codable> = Result<T, Error>
     
-    internal var baseURL: String = ""
-    internal var headers: [String: String] = [:]
+    internal var headers: [String: String]
     internal var session: Session = Session()
+    internal var baseURL: String
     
     public func getBaseURL() -> String { baseURL }
     public func getGlobalHeaders() -> [String: String] { headers }
     
     
-    public static let shared = NetworkManager()
-    
-    public init () {
-        headers = ["Content-Type": "application/json"]
-    }
-    
-    public func initialise(_ baseURL: String, globalHeaders: [String: String]? = nil, publicKey: URL? = nil, certificate: URL? = nil) {
+    public init (_ baseURL: String, globalHeaders: [String: String]? = nil, publicKey: URL? = nil, certificate: URL? = nil) {
         self.baseURL = baseURL
-        if let globalHeaders { self.headers = globalHeaders }
+        headers = globalHeaders ?? ["Content-Type": "application/json"]
         if let publicKey {
             do {
                 let publicKeyData = try Data(contentsOf: publicKey)
@@ -87,20 +80,8 @@ open class NetworkManager {
         headers = sanitizeParam(headers)
     }
     
-    @available(*, deprecated, message: "Use SHNetworkError.custom(message:code:) instead")
-    public func createCustomError(_ message: String?, code: Int = 0) -> Error {
-        guard let message = message else {return NetworkError.unknown}
-        let customError = NSError(domain:"", code: code, userInfo:[ NSLocalizedDescriptionKey: message])
-        return customError as Error
-    }
+    public func changeBaseURL(_ url: String) { baseURL = url }
     
-    
-    // MARK: - parameter related
-    @available(*, deprecated, message: "Use your own JSON serialization instead")
-    public func jsonToString(_ json: [String: Any]) -> String? {
-        guard let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) else {return nil}
-        return String(data: data, encoding: .utf8)
-    }
     
     public func convertToGetParam(_ param: [String: Any]) -> String {
         
@@ -116,7 +97,7 @@ open class NetworkManager {
         
     }
     
-    public func sanitizeParam(_ param: [String: Any]) -> [String: Any] {
+    public func sanitizeParam(_ param: [String: Any]) -> [String: any Sendable] {
         
         var localParam: [String: Any] = [:]
         for (key, _) in param {
@@ -125,7 +106,7 @@ open class NetworkManager {
             if let value = param[key] as? Double { localParam[key] = value }
             if let value = param[key] as? Bool { localParam[key] = value }
         }
-        return localParam
+        return convertToSendableDict(localParam)
         
     }
     
@@ -137,6 +118,32 @@ open class NetworkManager {
         }
         return localParam
         
+    }
+    
+    func convertToSendableDict(_ dict: [String: Any]) -> [String: any Sendable] {
+        var result: [String: any Sendable] = [:]
+        
+        for (key, value) in dict {
+            switch value {
+            case let stringValue as String:
+                result[key] = stringValue
+            case let intValue as Int:
+                result[key] = intValue
+            case let doubleValue as Double:
+                result[key] = doubleValue
+            case let boolValue as Bool:
+                result[key] = boolValue
+            case let dataValue as Data:
+                result[key] = dataValue
+            case let urlValue as URL:
+                result[key] = urlValue
+            default:
+                // Convert unknown types to String (which is Sendable)
+                result[key] = String(describing: value)
+            }
+        }
+        
+        return result
     }
     
     

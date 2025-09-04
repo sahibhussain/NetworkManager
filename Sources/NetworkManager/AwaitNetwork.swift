@@ -80,7 +80,7 @@ public extension NetworkManager {
     // MARK: - general request
     func sendRequest<T: Codable & Sendable>(_ urlExt: String, method: HTTPMethod, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:]) async throws -> T {
         let urlString = baseURL + urlExt
-        var localParam = param
+        var localParam = convertToSendableDict(param)
         if shouldSanitise { localParam = sanitizeParam(param) }
         let localHeaders = headers.merging(customHeader) { (_, new) in new }
         return try await withCheckedThrowingContinuation { continuation in
@@ -95,7 +95,7 @@ public extension NetworkManager {
     }
     
     func sendRequest<T: Codable & Sendable>(with completeUrl: String, method: HTTPMethod, param: [String: Any], shouldSanitise: Bool = false, customHeader: [String: String] = [:], headers: [String: String]) async throws -> T {
-        var localParam = param
+        var localParam = convertToSendableDict(param)
         if shouldSanitise { localParam = sanitizeParam(param) }
         let localHeaders = headers.merging(customHeader) { (_, new) in new }
         return try await withCheckedThrowingContinuation { continuation in
